@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KOPDES ONLINE | Belanja Desa</title>
+<style>
+:root{
+  --green:#176b3a;
+  --dark:#104b2a;
+  --light:#eaf5e9;
+  --gold:#f5c451;
+  --bg:#f4f7f2;
+  --text:#243329;
+  --muted:#718078;
+  --white:#fff;
+  --border:#e2e9e1;
+  --red:#dc3545;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+a{color:inherit;text-decoration:none}
+.topbar{background:var(--dark);color:white;padding:9px 5%;font-size:12px;display:flex;justify-content:space-between;gap:12px}
+header{background:white;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px #0000000c}
+.header-main{max-width:1250px;margin:auto;padding:15px 20px;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;min-width:195px}
+.logo-icon{background:var(--green);color:var(--gold);width:45px;height:45px;border-radius:12px;display:grid;place-items:center;font-size:25px}
+.logo h1{font-size:19px;color:var(--green);margin:0}
+.logo small{color:var(--muted);font-size:11px}
+.search{display:flex;flex:1;min-width:100px}
+.search input{width:100%;min-width:0;border:2px solid var(--green);padding:12px;border-radius:9px 0 0 9px;outline:none}
+.search button{border:0;background:var(--green);color:white;padding:0 20px;border-radius:0 9px 9px 0}
+.header-actions{display:flex;gap:8px}
+.btn{border:0;border-radius:8px;padding:11px 15px;font-weight:600}
+.primary{background:var(--green);color:white}
+.secondary{background:var(--light);color:var(--green)}
+.gold{background:var(--gold);color:var(--dark)}
+.danger{background:#fee2e2;color:#991b1b}
+.small-btn{padding:7px 10px;font-size:12px}
+nav{display:flex;gap:20px;max-width:1250px;margin:auto;padding:0 20px 13px;overflow-x:auto;white-space:nowrap}
+nav button{background:none;border:0;color:#4b6150;font-size:13px}
+nav button:hover{color:var(--green)}
+main{max-width:1250px;margin:auto;padding:22px 20px 50px}
+.hero{border-radius:18px;background:linear-gradient(120deg,#104b2a,#23864a);color:white;padding:35px;display:grid;grid-template-columns:1.4fr 1fr;gap:20px;overflow:hidden;position:relative}
+.hero h2{font-size:clamp(27px,4vw,42px);margin:8px 0 13px;line-height:1.15}
+.hero p{line-height:1.7;color:#e0f2e5;max-width:530px}
+.hero-art{display:flex;justify-content:center;align-items:center;font-size:90px;gap:5px}
+.pill{display:inline-block;background:#ffffff20;border:1px solid #ffffff50;border-radius:20px;padding:7px 12px;font-size:12px}
+.hero .btn{margin-top:10px}
+.section{margin-top:28px}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.section-heading h2{margin:0;font-size:21px}
+.section-heading p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.categories{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.category{background:white;border:1px solid var(--border);border-radius:12px;padding:17px 8px;text-align:center}
+.category:hover,.category.active{border-color:var(--green);background:var(--light)}
+.category .emoji{font-size:31px;display:block;margin-bottom:9px}
+.category span:last-child{font-size:12px;font-weight:600}
+.filters{display:flex;gap:9px;flex-wrap:wrap}
+.filters select{border:1px solid var(--border);padding:9px;border-radius:8px;background:white}
+.products{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px}
+.card{background:white;border:1px solid var(--border);border-radius:13px;overflow:hidden;min-width:0;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.product-image{height:145px;display:grid;place-items:center;font-size:65px;background:linear-gradient(140deg,#eef7e9,#d8edce);position:relative}
+.product-image img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;left:8px;top:8px;background:#dff4df;color:var(--green);font-size:10px;padding:5px 7px;border-radius:5px}
+.product-body{padding:12px}
+.product-name{font-size:13px;line-height:1.45;min-height:37px;font-weight:600}
+.product-price{font-size:16px;color:var(--green);font-weight:800;margin-top:9px}
+.product-meta{font-size:11px;color:var(--muted);margin-top:7px}
+.product-actions{display:flex;gap:6px;margin-top:12px}
+.product-actions button{flex:1;padding:9px 5px;font-size:11px}
+.panel{background:white;border:1px solid var(--border);border-radius:13px;padding:20px}
+.hidden{display:none!important}
+.page-title{margin:0 0 20px;font-size:25px}
+.two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #d6e0d5;border-radius:8px;background:white}
+.field textarea{min-height:80px;resize:vertical}
+.cart-row{display:grid;grid-template-columns:48px 1fr auto;gap:11px;padding:14px 0;border-bottom:1px solid var(--border);align-items:center}
+.cart-emoji{height:48px;background:var(--light);display:grid;place-items:center;border-radius:8px;font-size:24px}
+.qty{display:flex;gap:8px;align-items:center;margin-top:7px}
+.qty button{background:white;border:1px solid var(--border);border-radius:5px;width:27px;height:27px}
+.summary-row{display:flex;justify-content:space-between;gap:12px;margin:13px 0;font-size:14px}
+.summary-total{font-size:19px;font-weight:800;border-top:1px solid var(--border);padding-top:16px}
+.muted{color:var(--muted);font-size:12px;line-height:1.6}
+.empty{text-align:center;padding:45px 15px;color:var(--muted)}
+.empty div{font-size:45px;margin-bottom:10px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:570px}
+th,td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--border);font-size:12px}
+th{background:#f2f7f0;color:var(--dark)}
+.status{background:#e8f5e9;color:var(--green);padding:5px 8px;border-radius:20px;font-size:11px;white-space:nowrap}
+.notice{position:fixed;bottom:20px;right:20px;z-index:30;background:#173e25;color:white;padding:14px 18px;border-radius:10px;box-shadow:0 5px 25px #0002;max-width:90vw}
+.modal{position:fixed;inset:0;background:#071b0dcc;z-index:20;display:flex;align-items:center;justify-content:center;padding:15px;overflow-y:auto}
+.modal-box{width:min(580px,100%);max-height:95vh;overflow-y:auto;background:white;border-radius:15px;padding:24px}
+.modal-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:20px}
+.modal-title h2{margin:0;font-size:21px}
+.close{border:0;background:#edf2ed;border-radius:50%;width:34px;height:34px}
+.receipt{font-family:monospace;color:#111;background:white;padding:15px;max-width:360px;margin:auto}
+.receipt h2,.receipt p{text-align:center}
+.receipt hr{border:0;border-top:1px dashed #888;margin:13px 0}
+.receipt-line{display:flex;justify-content:space-between;gap:10px;margin:9px 0;font-size:12px}
+footer{background:#103c25;color:white;padding:35px 20px}
+.footer-inner{max-width:1210px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:25px}
+footer p,footer li{font-size:12px;color:#d4e5d6;line-height:1.8}
+footer ul{list-style:none;padding:0}
+footer h3{font-size:14px}
+@media(max-width:950px){
+ .products{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .header-main{flex-wrap:wrap}
+ .logo{min-width:0}
+ .search{order:3;flex-basis:100%}
+ .hero{padding:25px}
+}
+@media(max-width:600px){
+ .topbar{padding:8px 12px}
+ .header-main{padding:12px;gap:10px}
+ .logo h1{font-size:16px}
+ .header-actions .btn{padding:9px;font-size:12px}
+ nav{padding:0 12px 12px;gap:16px}
+ main{padding:14px 12px 35px}
+ .hero{grid-template-columns:1fr;padding:24px 20px}
+ .hero-art{font-size:58px;justify-content:flex-start}
+ .categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .category{padding:12px 5px}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .product-image{height:120px;font-size:52px}
+ .product-body{padding:10px}
+ .product-price{font-size:14px}
+ .two-col{grid-template-columns:1fr}
+ .panel{padding:15px}
+ .footer-inner{grid-template-columns:1fr}
+ .section-heading h2{font-size:18px}
+}
+@media print{
+ body *{visibility:hidden!important}
+ #receiptModal,#receiptModal *{visibility:visible!important}
+ #receiptModal{position:absolute;inset:0;background:white;padding:0}
+ #receiptModal .modal-box{width:100%;max-height:none;overflow:visible;box-shadow:none;padding:0}
+ #receiptModal .modal-title,#receiptModal .no-print{display:none!important}
+ .receipt{max-width:300px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span>🌿 Mendukung UMKM dan ekonomi desa Indonesia</span>
+  <span id="today"></span>
+</div>
+
+<header>
+  <div class="header-main">
+    <a href="#" class="logo" onclick="showPage('home');return false">
+      <div class="logo-icon">🌾</div>
+      <div><h1>KOPDES online</h1><small>Belanja Mudah, Desa Berdaya</small></div>
+    </a>
+    <form class="search" id="searchForm">
+      <input id="searchInput" placeholder="Cari beras, sembako, produk UMKM..." aria-label="Cari produk">
+      <button type="submit">Cari</button>
+    </form>
+    <div class="header-actions">
+      <button class="btn secondary" onclick="showPage('cart')">🛒 <span id="cartCount">0</span></button>
+      <button class="btn primary" onclick="showPage('orders')">Pesanan</button>
+    </div>
+  </div>
+  <nav>
+    <button onclick="showPage('home')">Beranda</button>
+    <button onclick="filterCategory('Sembako')">Sembako</button>
+    <button onclick="filterCategory('Pertanian')">Pertanian</button>
+    <button onclick="filterCategory('UMKM')">Produk UMKM</button>
+    <button onclick="filterCategory('Makanan')">Makanan</button>
+    <button onclick="filterCategory('Kerajinan')">Kerajinan</button>
+    <button onclick="showPage('seller')">🏪 Toko Saya</button>
+    <button onclick="showPage('admin')">⚙ Admin</button>
+  </nav>
+</header>
+
+<main>
+  <section id="homePage">
+    <div class="hero">
+      <div>
+        <span class="pill">🌱 Marketplace Koperasi Desa</span>
+        <h2>Belanja Produk Desa,<br>Bangun Ekonomi Bersama!</h2>
+        <p>Temukan sembako, hasil pertanian, makanan lokal, dan produk unggulan UMKM dari masyarakat desa.</p>
+        <button class="btn gold" onclick="document.getElementById('productSection').scrollIntoView({behavior:'smooth'})">Mulai Belanja →</button>
+      </div>
+      <div class="hero-art" aria-label="Ilustrasi hasil desa">🌾 🥬 🧺</div>
+    </div>
+
+    <section class="section">
+      <div class="section-heading">
+        <div><h2>Kategori Pilihan</h2><p>Produk kebutuhan dan unggulan desa</p></div>
+      </div>
+      <div class="categories" id="categories"></div>
+    </section>
+
+    <section class="section" id="productSection">
+      <div class="section-heading">
+        <div><h2 id="productHeading">Produk Pilihan</h2><p>Belanja dari koperasi dan UMKM desa</p></div>
+        <div class="filters">
+          <select id="sortSelect" aria-label="Urutkan produk">
+            <option value="popular">Pilihan</option>
+            <option value="cheap">Harga terendah</option>
+            <option value="expensive">Harga tertinggi</option>
+            <option value="name">Nama A-Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="products" id="products"></div>
+    </section>
+  </section>
+
+  <section id="cartPage" class="hidden">
+    <h2 class="page-title">🛒 Keranjang Belanja</h2>
+    <div class="two-col">
+      <div class="panel">
+        <div id="cartItems"></div>
+        <button class="btn secondary" onclick="showPage('home')">← Lanjut Belanja</button>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Ringkasan Belanja</h3>
+        <div class="summary-row"><span>Subtotal</span><strong id="cartSubtotal">Rp0</strong></div>
+        <div class="summary-row"><span>Estimasi ongkir</span><strong id="cartShipping">Rp0</strong></div>
+        <div class="summary-row summary-total"><span>Total</span><strong id="cartTotal">Rp0</strong></div>
+        <p class="muted">Ongkir di sini merupakan estimasi contoh dan belum terhubung ke jasa ekspedisi.</p>
+        <button class="btn primary" style="width:100%" id="checkoutButton" onclick="openCheckout()">Lanjut ke Checkout</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="ordersPage" class="hidden">
+    <h2 class="page-title">📦 Pesanan Saya</h2>
+    <div class="panel">
+      <div id="ordersList"></div>
+    </div>
+  </section>
+
+  <section id="sellerPage" class="hidden">
+    <h2 class="page-title">🏪 Dashboard Penjual</h2>
+    <div class="stats categories" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:18px">
+      <div class="panel"><span class="muted">Produk</span><h2 id="sellerProducts">0</h2></div>
+      <div class="panel"><span class="muted">Pesanan</span><h2 id="sellerOrders">0</h2></div>
+      <div class="panel"><span class="muted">Total penjualan</span><h2 id="sellerRevenue">Rp0</h2></div>
+    </div>
+    <div class="panel">
+      <div class="section-heading"><h2>Tambah Produk</h2></div>
+      <form id="productForm">
+        <div class="two-col">
+          <div class="field"><label>Nama produk</label><input name="name" required maxlength="100" placeholder="Contoh: Beras Organik 5 Kg"></div>
+          <div class="field"><label>Kategori</label><select name="category"><option>Sembako</option><option>Pertanian</option><option>UMKM</option><option>Makanan</option><option>Minuman</option><option>Kerajinan</option><option>Kebutuhan Rumah</option></select></div>
+          <div class="field"><label>Harga (Rupiah)</label><input name="price" type="number" min="1" step="1" required></div>
+          <div class="field"><label>Stok</label><input name="stock" type="number" min="0" step="1" required></div>
+          <div class="field"><label>Emoji produk</label><input name="emoji" maxlength="8" value="📦"></div>
+          <div class="field"><label>Nama toko</label><input name="shop" maxlength="70" value="Koperasi Desa"></div>
+        </div>
+        <button class="btn primary" type="submit">+ Simpan Produk</button>
+      </form>
+    </div>
+    <div class="panel section">
+      <h2>Kelola Produk</h2>
+      <div class="table-wrap"><table><thead><tr><th>Produk</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="sellerTable"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="adminPage" class="hidden">
+    <h2 class="page-title">⚙ Dashboard Admin Koperasi</h2>
+    <p class="muted">Ringkasan data yang tersimpan pada browser ini. Versi produksi memerlukan login dan database server.</p>
+    <div class="categories" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:18px">
+      <div class="panel"><span class="muted">Jumlah produk</span><h2 id="adminProducts">0</h2></div>
+      <div class="panel"><span class="muted">Jumlah pesanan</span><h2 id="adminOrders">0</h2></div>
+      <div class="panel"><span class="muted">Nilai transaksi</span><h2 id="adminRevenue">Rp0</h2></div>
+    </div>
+    <div class="panel">
+      <div class="section-heading"><h2>Data Semua Pesanan</h2><button class="btn secondary" onclick="exportOrders()">Ekspor CSV</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Nomor</th><th>Pelanggan</th><th>Tanggal</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="adminTable"></tbody></table></div>
+    </div>
+    <div class="panel section">
+      <h3>Pengaturan Data Demo</h3>
+      <p class="muted">Menghapus data demo akan mengembalikan produk contoh dan menghapus riwayat pesanan lokal. Tindakan ini tidak dapat dibatalkan.</p>
+      <button class="btn danger" onclick="resetDemo()">Reset Data Demo</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div><h2>🌾 KOPDES ONLINE</h2><p>Marketplace koperasi desa untuk memperluas akses belanja masyarakat dan membantu produk lokal menjangkau lebih banyak pembeli.</p><strong>Belanja Mudah, Desa Berdaya.</strong></div>
+    <div><h3>Menu</h3><ul><li><a href="#" onclick="showPage('home');return false">Beranda</a></li><li><a href="#" onclick="showPage('orders');return false">Pesanan</a></li><li><a href="#" onclick="showPage('seller');return false">Toko Saya</a></li></ul></div>
+    <div><h3>Layanan</h3><p>Belanja produk lokal<br>Informasi pesanan<br>Struk digital<br>Pengelolaan toko</p></div>
+  </div>
+</footer>
+
+<div id="notice" class="notice hidden" role="status"></div>
+
+<div id="checkoutModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title"><h2>Checkout Pesanan</h2><button class="close" onclick="closeModal('checkoutModal')">✕</button></div>
+    <form id="checkoutForm">
+      <div class="field"><label>Nama penerima</label><input name="customer" required maxlength="100" placeholder="Nama lengkap"></div>
+      <div class="field"><label>Nomor telepon</label><input name="phone" type="tel" required maxlength="20" placeholder="08xxxxxxxxxx"></div>
+      <div class="field"><label>Alamat lengkap</label><textarea name="address" required maxlength="500" placeholder="Jalan, RT/RW, desa, kecamatan, kabupaten"></textarea></div>
+      <div class="field"><label>Catatan untuk penjual (opsional)</label><input name="note" maxlength="200" placeholder="Contoh: titip di rumah tetangga"></div>
+      <div class="field"><label>Metode pembayaran</label><select name="payment"><option value="COD">COD (Bayar saat barang diterima)</option><option value="Transfer bank">Transfer bank (demo)</option><option value="QRIS">QRIS (demo)</option></select></div>
+      <div class="panel" style="background:#f4f8f2;margin-bottom:16px">
+        <div class="summary-row"><span>Subtotal</span><strong id="checkoutSubtotal">Rp0</strong></div>
+        <div class="summary-row"><span>Ongkir</span><strong id="checkoutShipping">Rp0</strong></div>
+        <div class="summary-row summary-total"><span>Total</span><strong id="checkoutTotal">Rp0</strong></div>
+      </div>
+      <p class="muted">Transfer dan QRIS belum terhubung ke penyedia pembayaran. Jangan menganggap pembayaran elektronik sudah terkonfirmasi.</p>
+      <button class="btn primary" type="submit" style="width:100%">Buat Pesanan</button>
+    </form>
+  </div>
+</div>
+
+<div id="receiptModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title"><h2>Struk KOPDES ONLINE</h2><button class="close no-print" onclick="closeModal('receiptModal')">✕</button></div>
+    <div id="receiptContent"></div>
+    <div class="no-print" style="display:flex;gap:9px;margin-top:18px">
+      <button class="btn primary" style="flex:1" onclick="window.print()">🖨 Cetak / Simpan PDF</button>
+      <button class="btn secondary" onclick="closeModal('receiptModal')">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat("id-ID", {
+  style:"currency",currency:"IDR",maximumFractionDigits:0
+}).format(n);
+
+const initialProducts = [
+ {id:1,name:"Beras Premium 5 Kg",price:75000,stock:50,category:"Sembako",emoji:"🍚",shop:"Koperasi Desa",sold:125},
+ {id:2,name:"Minyak Goreng 1 Liter",price:18000,stock:80,category:"Sembako",emoji:"🛢️",shop:"Koperasi Desa",sold:100},
+ {id:3,name:"Telur Ayam 1 Kg",price:29000,stock:40,category:"Sembako",emoji:"🥚",shop:"Koperasi Desa",sold:85},
+ {id:4,name:"Pupuk Organik 5 Kg",price:25000,stock:30,category:"Pertanian",emoji:"🌱",shop:"Tani Makmur",sold:62},
+ {id:5,name:"Bibit Cabai",price:12000,stock:60,category:"Pertanian",emoji:"🌶️",shop:"Tani Makmur",sold:80},
+ {id:6,name:"Keripik Pisang",price:15000,stock:45,category:"UMKM",emoji:"🍌",shop:"UMKM Berkah",sold:96},
+ {id:7,name:"Madu Hutan 250 ml",price:45000,stock:20,category:"UMKM",emoji:"🍯",shop:"Madu Desa",sold:42},
+ {id:8,name:"Kopi Bubuk Lokal",price:22000,stock:35,category:"Minuman",emoji:"☕",shop:"Kopi Nusantara",sold:74},
+ {id:9,name:"Kue Kering Desa",price:18000,stock:25,category:"Makanan",emoji:"🍪",shop:"Dapur UMKM",sold:58},
+ {id:10,name:"Anyaman Bambu",price:35000,stock:15,category:"Kerajinan",emoji:"🧺",shop:"Kriya Desa",sold:24},
+ {id:11,name:"Sabun Cuci",price:10000,stock:55,category:"Kebutuhan Rumah",emoji:"🧼",shop:"Koperasi Desa",sold:46},
+ {id:12,name:"Sayur Segar",price:10000,stock:35,category:"Pertanian",emoji:"🥬",shop:"Kebun Desa",sold:93},
+ {id:13,name:"Susu Sapi Lokal",price:16000,stock:24,category:"Minuman",emoji:"🥛",shop:"Peternakan Desa",sold:39},
+ {id:14,name:"Sambal Rumahan",price:14000,stock:28,category:"Makanan",emoji:"🌶️",shop:"Dapur UMKM",sold:67},
+ {id:15,name:"Tas Anyaman",price:55000,stock:12,category:"Kerajinan",emoji:"👜",shop:"Kriya Desa",sold:17}
+];
+
+function loadData(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch(e) {
+    return fallback;
+  }
+}
+
+let products = loadData("kopdes_products_v1",initialProducts);
+let orders = loadData("kopdes_orders_v1",[]);
+let cart = loadData("kopdes_cart_v1",{});
+let activeCategory = "";
+let currentPage = "home";
+let nextProductId = Math.max(0,...products.map(p=>Number(p.id)||0))+1;
+
+function saveData() {
+  try {
+    localStorage.setItem("kopdes_products_v1",JSON.stringify(products));
+    localStorage.setItem("kopdes_orders_v1",JSON.stringify(orders));
+    localStorage.setItem("kopdes_cart_v1",JSON.stringify(cart));
+    return true;
+  } catch(e) {
+    notify("Penyimpanan gagal. Periksa kapasitas browser.");
+    return false;
+  }
+}
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function notify(message) {
+  $("notice").textContent=message;
+  $("notice").classList.remove("hidden");
+  clearTimeout(notify.timer);
+  notify.timer=setTimeout(()=>$("notice").classList.add("hidden"),2800);
+}
+
+function showPage(page) {
+  currentPage=page;
+  const pages=["home","cart","orders","seller","admin"];
+  pages.forEach(p=>$(p+"Page").classList.toggle("hidden",p!==page));
+  if(page==="cart")renderCart();
+  if(page==="orders")renderOrders();
+  if(page==="seller")renderSeller();
+  if(page==="admin")renderAdmin();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function closeModal(id) { $(id).classList.add("hidden"); }
+function openModal(id) { $(id).classList.remove("hidden"); }
+
+function categoryIcon(name) {
+  return ({
+    "Semua":"🛍️","Sembako":"🍚","Pertanian":"🌱",
+    "UMKM":"🏪","Makanan":"🍱","Minuman":"🥤",
+    "Kerajinan":"🧺","Kebutuhan Rumah":"🧹"
+  })[name]||"📦";
+}
+
+function renderCategories() {
+  const cats=["Semua","Sembako","Pertanian","UMKM","Makanan","Minuman","Kerajinan","Kebutuhan Rumah"];
+  $("categories").innerHTML=cats.map(c=>`
+    <button class="category ${activeCategory===c||(c==="Semua"&&!activeCategory)?"active":""}" onclick="filterCategory('${c}')">
+      <span class="emoji">${categoryIcon(c)}</span><span>${c}</span>
+    </button>
+  `).join("");
+}
+
+function filterCategory(category) {
+  activeCategory=category==="Semua"?"":category;
+  showPage("home");
+  renderProducts();
+  $("productSection").scrollIntoView({behavior:"smooth"});
+}
+
+function renderProducts() {
+  let list=products.filter(p=>
+    (!activeCategory||p.category===activeCategory)&&
+    p.name.toLowerCase().includes($("searchInput").value.trim().toLowerCase())
+  );
+  const sort=$("sortSelect").value;
+  if(sort==="cheap")list.sort((a,b)=>a.price-b.price);
+  if(sort==="expensive")list.sort((a,b)=>b.price-a.price);
+  if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name));
+  if(sort==="popular")list.sort((a,b)=>(b.sold||0)-(a.sold||0));
+
+  $("productHeading").textContent=activeCategory?"Produk "+activeCategory:"Produk Pilihan";
+  $("products").innerHTML=list.length?list.map(p=>`
+    <article class="card">
+      <div class="product-image">
+        <span>${esc(p.emoji||"📦")}</span>
+        <span class="tag">${esc(p.category)}</span>
+      </div>
+      <div class="product-body">
+        <div class="product-name">${esc(p.name)}</div>
+        <div class="product-price">${money(p.price)}</div>
+        <div class="product-meta">🏪 ${esc(p.shop||"Koperasi Desa")}</div>
+        <div class="product-meta">Terjual ${Number(p.sold)||0} · Stok ${p.stock}</div>
+        <div class="product-actions">
+          <button class="btn secondary" onclick="addToCart(${p.id})" ${p.stock<=0?"disabled":""}>+ Keranjang</button>
+          <button class="btn primary" onclick="buyNow(${p.id})" ${p.stock<=0?"disabled":""}>Beli</button>
+        </div>
+      </div>
+    </article>
+  `).join(""):`<div class="empty" style="grid-column:1/-1"><div>🔎</div>Produk tidak ditemukan.</div>`;
+  renderCategories();
+  updateCartCount();
+}
+
+function cartCount() {
+  return Object.values(cart).reduce((s,n)=>s+(Number(n)||0),0);
+}
+function updateCartCount() { $("cartCount").textContent=cartCount(); }
+
+function addToCart(id) {
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
+  if((cart[id]||0)>=p.stock)return notify("Stok produk tidak mencukupi.");
+  cart[id]=(cart[id]||0)+1;
+  saveData();renderCart();renderProducts();
+  notify(p.name+" ditambahkan ke keranjang.");
+}
+
+function buyNow(id) {
+  if(!cart[id])addToCart(id);
+  showPage("cart");
+}
+
+function subtotal() {
+  return Object.entries(cart).reduce((sum,[id,qty])=>{
+    const p=products.find(x=>x.id===Number(id));
+    return sum+(p?p.price*qty:0);
+  },0);
+}
+
+// Estimasi ongkir contoh; ganti dengan integrasi kurir untuk produksi.
+function shipping() { return subtotal()>0?10000:0; }
+function total() { return subtotal()+shipping(); }
+
+function changeQty(id,delta) {
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
+  const qty=(cart[id]||0)+delta;
+  if(qty<=0)delete cart[id];
+  else if(qty<=p.stock)cart[id]=qty;
+  else return notify("Stok yang tersedia hanya "+p.stock+".");
+  saveData();renderCart();renderProducts();
+}
+
+function renderCart() {
+  const entries=Object.entries(cart).filter(([id,q])=>
+    products.some(p=>p.id===Number(id))&&q>0
+  );
+  $("cartItems").innerHTML=entries.length?entries.map(([id,qty])=>{
+    const p=products.find(x=>x.id===Number(id));
+    return `<div class="cart-row">
+      <div class="cart-emoji">${esc(p.emoji||"📦")}</div>
+      <div><strong>${esc(p.name)}</strong><div class="muted">${money(p.price)} / produk</div>
+        <div class="qty">
+          <button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span>
+          <button onclick="changeQty(${p.id},1)" ${qty>=p.stock?"disabled":""}>+</button>
+          <button class="btn danger small-btn" onclick="removeCart(${p.id})">Hapus</button>
+        </div>
+      </div>
+      <strong>${money(p.price*qty)}</strong>
+    </div>`;
+  }).join(""):`<div class="empty"><div>🛒</div>Keranjang masih kosong.<br><button class="btn primary" onclick="showPage('home')">Mulai Belanja</button></div>`;
+  $("cartSubtotal").textContent=money(subtotal());
+  $("cartShipping").textContent=money(shipping());
+  $("cartTotal").textContent=money(total());
+  $("checkoutButton").disabled=entries.length===0;
+  updateCartCount();
+}
+
+function removeCart(id) {
+  delete cart[id];saveData();renderCart();renderProducts();
+}
+
+function openCheckout() {
+  if(!cartCount())return notify("Keranjang masih kosong.");
+  for(const [id,qty] of Object.entries(cart)){
+    const p=products.find(x=>x.id===Number(id));
+    if(!p||qty>p.stock)return notify("Stok "+(p?.name||"produk")+" tidak mencukupi.");
+  }
+  $("checkoutSubtotal").textContent=money(subtotal());
+  $("checkoutShipping").textContent=money(shipping());
+  $("checkoutTotal").textContent=money(total());
+  openModal("checkoutModal");
+}
+
+$("checkoutForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const form=new FormData(e.target);
+  const customer=String(form.get("customer")).trim();
+  const phone=String(form.get("phone")).trim();
+  const address=String(form.get("address")).trim();
+  if(!customer||!phone||!address)return notify("Lengkapi informasi penerima.");
+
+  const items=[];
+  for(const [id,qty] of Object.entries(cart)){
+    const p=products.find(x=>x.id===Number(id));
+    if(!p||qty<=0||qty>p.stock)return notify("Stok berubah. Periksa keranjang.");
+    items.push({id:p.id,name:p.name,price:p.price,qty,shop:p.shop||"Koperasi Desa"});
+  }
+  if(!items.length)return notify("Keranjang masih kosong.");
+
+  const order={
+    id:"KDO-"+Date.now(),
+    date:new Date().toISOString(),
+    customer,phone,address,
+    note:String(form.get("note")||""),
+    payment:String(form.get("payment")),
+    items,subtotal:subtotal(),shipping:shipping(),total:total(),
+    status:"Pesanan dibuat"
+  };
+
+  // Simpan data sebelum menyelesaikan checkout.
+  orders.push(order);
+  if(!saveData()){
+    orders.pop();
+    return;
+  }
+
+  items.forEach(i=>{
+    const p=products.find(x=>x.id===i.id);
+    p.stock-=i.qty;
+    p.sold=(p.sold||0)+i.qty;
+  });
+
+  cart={};
+  if(!saveData())notify("Pesanan tersimpan, tetapi penyimpanan stok perlu diperiksa.");
+  closeModal("checkoutModal");
+  e.target.reset();
+  renderProducts();renderCart();renderOrders();renderAdmin();
+  showReceipt(order);
+  showPage("orders");
+  notify("Pesanan berhasil dibuat.");
+});
+
+function renderOrders() {
+  $("ordersList").innerHTML=orders.length?orders.slice().reverse().map(o=>`
+    <div style="padding:16px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div><strong>${esc(o.id)}</strong><div class="muted">${new Date(o.date).toLocaleString("id-ID")}</div></div>
+        <span class="status">${esc(o.status)}</span>
+      </div>
+      <p class="muted">${o.items.map(i=>esc(i.name)+" × "+i.qty).join(", ")}</p>
+      <div class="summary-row"><span>Total pesanan</span><strong>${money(o.total)}</strong></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn secondary small-btn" onclick="showReceiptById('${o.id}')">Lihat Struk</button>
+        <button class="btn secondary small-btn" onclick="trackOrder('${o.id}')">Status Pesanan</button>
+      </div>
+    </div>
+  `).join(""):`<div class="empty"><div>📦</div>Belum ada pesanan.</div>`;
+}
+
+function trackOrder(id) {
+  const o=orders.find(x=>x.id===id);
+  if(o)notify("Status "+o.id+": "+o.status);
+}
+
+function showReceiptById(id) {
+  const o=orders.find(x=>x.id===id);
+  if(o)showReceipt(o);
+}
+
+function showReceipt(o) {
+  $("receiptContent").innerHTML=`
+    <div class="receipt">
+      <h2>KOPDES ONLINE</h2>
+      <p>Belanja Mudah, Desa Berdaya</p>
+      <hr>
+      <div class="receipt-line"><span>No. Pesanan</span><span>${esc(o.id)}</span></div>
+      <div class="receipt-line"><span>Tanggal</span><span>${esc(new Date(o.date).toLocaleString("id-ID"))}</span></div>
+      <hr>
+      <strong>DATA PENERIMA</strong>
+      <p style="text-align:left">${esc(o.customer)}<br>${esc(o.phone)}<br>${esc(o.address)}</p>
+      <hr>
+      ${o.items.map(i=>`
+        <div style="margin:12px 0">
+          <div>${esc(i.name)}</div>
+          <div class="receipt-line"><span>${i.qty} x ${money(i.price)}</span><span>${money(i.qty*i.price)}</span></div>
+        </div>
+      `).join("")}
+      <hr>
+      <div class="receipt-line"><span>Subtotal</span><span>${money(o.subtotal)}</span></div>
+      <div class="receipt-line"><span>Ongkos kirim</span><span>${money(o.shipping)}</span></div>
+      <div class="receipt-line" style="font-weight:bold;font-size:15px"><span>TOTAL</span><span>${money(o.total)}</span></div>
+      <div class="receipt-line"><span>Pembayaran</span><span>${esc(o.payment)}</span></div>
+      <div class="receipt-line"><span>Status</span><span>${esc(o.status)}</span></div>
+      ${o.note?`<p style="text-align:left">Catatan: ${esc(o.note)}</p>`:""}
+      <hr>
+      <p>Terima kasih telah berbelanja!</p>
+      <p>Produk lokal, ekonomi desa kuat.</p>
+    </div>`;
+  openModal("receiptModal");
+}
+
+function renderSeller() {
+  $("sellerProducts").textContent=products.length;
+  $("sellerOrders").textContent=orders.length;
+  $("sellerRevenue").textContent=money(orders.reduce((s,o)=>s+o.total,0));
+  $("sellerTable").innerHTML=products.map(p=>`
+    <tr><td>${esc(p.emoji)} ${esc(p.name)}<br><span class="muted">${esc(p.category)}</span></td>
+    <td>${money(p.price)}</td><td>${p.stock}</td>
+    <td><button class="btn danger small-btn" onclick="deleteProduct(${p.id})">Hapus</button></td></tr>
+  `).join("")||'<tr><td colspan="4">Belum ada produk.</td></tr>';
+}
+
+$("productForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const f=new FormData(e.target);
+  const name=String(f.get("name")).trim();
+  const category=String(f.get("category"));
+  const price=Number(f.get("price"));
+  const stock=Number(f.get("stock"));
+  const shop=String(f.get("shop")).trim()||"Koperasi Desa";
+  const emoji=String(f.get("emoji")).trim()||"📦";
+  if(!name||!Number.isSafeInteger(price)||price<=0||!Number.isSafeInteger(stock)||stock<0){
+    return notify("Nama, harga, atau stok tidak valid.");
+  }
+  products.push({id:nextProductId++,name,category,price,stock,shop,emoji,sold:0});
+  if(!saveData()){products.pop();return;}
+  e.target.reset();
+  renderProducts();renderSeller();renderAdmin();
+  notify("Produk berhasil ditambahkan.");
+});
+
+function deleteProduct(id) {
+  const p=products.find(x=>x.id===id);
+  if(!p||!confirm("Hapus produk "+p.name+"?"))return;
+  products=products.filter(x=>x.id!==id);
+  delete cart[id];
+  saveData();renderProducts();renderSeller();renderCart();renderAdmin();
+  notify("Produk dihapus.");
+}
+
+function renderAdmin() {
+  $("adminProducts").textContent=products.length;
+  $("adminOrders").textContent=orders.length;
+  $("adminRevenue").textContent=money(orders.reduce((s,o)=>s+o.total,0));
+  $("adminTable").innerHTML=orders.slice().reverse().map(o=>`
+    <tr><td>${esc(o.id)}</td><td>${esc(o.customer)}</td>
+    <td>${new Date(o.date).toLocaleDateString("id-ID")}</td>
+    <td>${money(o.total)}</td><td><span class="status">${esc(o.status)}</span></td>
+    <td><select onchange="changeStatus('${o.id}',this.value)">
+      ${["Pesanan dibuat","Diproses","Dikirim","Selesai","Dibatalkan"].map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}
+    </select></td></tr>
+  `).join("")||'<tr><td colspan="6">Belum ada pesanan.</td></tr>';
+}
+
+function changeStatus(id,status) {
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+  o.status=status;
+  saveData();renderAdmin();renderOrders();
+  notify("Status pesanan diperbarui.");
+}
+
+function exportOrders() {
+  const rows=[["ID","Tanggal","Pelanggan","Telepon","Alamat","Produk","Subtotal","Ongkir","Total","Pembayaran","Status"]];
+  orders.forEach(o=>rows.push([
+    o.id,o.date,o.customer,o.phone,o.address,
+    o.items.map(i=>i.name+" x"+i.qty).join("; "),
+    o.subtotal,o.shipping,o.total,o.payment,o.status
+  ]));
+  const csv="\uFEFF"+rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a");
+  a.href=url;a.download="laporan-kopdes-online.csv";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function resetDemo() {
+  if(!confirm("Hapus seluruh riwayat pesanan dan kembalikan produk contoh?"))return;
+  products=initialProducts.map(p=>({...p}));
+  orders=[];cart={};
+  nextProductId=16;
+  saveData();renderProducts();renderCart();renderOrders();renderSeller();renderAdmin();
+  notify("Data demo telah direset.");
+}
+
+$("searchForm").addEventListener("submit",e=>{
+  e.preventDefault();activeCategory="";showPage("home");renderProducts();
+  $("productSection").scrollIntoView({behavior:"smooth"});
+});
+$("searchInput").addEventListener("input",renderProducts);
+$("sortSelect").addEventListener("change",renderProducts);
+$("today").textContent=new Date().toLocaleDateString("id-ID",{dateStyle:"full"});
+
+renderCategories();
+renderProducts();
+renderCart();
+renderOrders();
+renderSeller();
+renderAdmin();
+</script>
+</body>
+</html>
